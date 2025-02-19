@@ -8,7 +8,7 @@ typedef struct {
     int* matrixData;   // Pointer to the matrix data stored in a 1D array
 } Matrix;
 
-// Function to create a matrix and optionally fill it with random values
+
 Matrix* create_matrix(size_t matrixSize, int fillWithRandom) {
     Matrix* matrix = (Matrix*) malloc(sizeof(Matrix));
     matrix->matrixData = (int*) malloc(sizeof(int) * matrixSize * matrixSize);
@@ -16,13 +16,13 @@ Matrix* create_matrix(size_t matrixSize, int fillWithRandom) {
 
     if (fillWithRandom) {
         for (size_t i = 0; i < matrixSize * matrixSize; i++) {
-            matrix->matrixData[i] = rand() % 100; // Numbers between 0 and 99
+            matrix->matrixData[i] = rand() % 100; 
         }
     }
     return matrix;
 }
 
-// Function to print a matrix
+
 void print_matrix(Matrix* matrix) {
     for (size_t i = 0; i < matrix->matrixSize; i++) {
         for (size_t j = 0; j < matrix->matrixSize; j++) {
@@ -32,7 +32,7 @@ void print_matrix(Matrix* matrix) {
     }
 }
 
-// Function to multiply two matrices
+
 Matrix* multiply_matrices(Matrix* matrixA, Matrix* matrixB) {
     size_t size = matrixA->matrixSize;
     Matrix* resultMatrix = create_matrix(size, 0); // Empty matrix
