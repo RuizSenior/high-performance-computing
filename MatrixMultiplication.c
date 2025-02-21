@@ -49,7 +49,7 @@ Matrix* multiply_matrices(Matrix* matrixA, Matrix* matrixB) {
     return resultMatrix;
 }
 
-// Function to free the memory allocated for a matrix
+
 void delete_matrix(Matrix** matrix) {
     if (matrix == NULL || *matrix == NULL) return; // Safety check
     free((*matrix)->matrixData);
@@ -69,13 +69,13 @@ int main(int argc, char* argv[]) {
         return 1;
     }
 
-    srand(time(NULL)); // Seed for random numbers
+    srand(time(NULL)); 
 
     // Create matrices
     Matrix* matrixA = create_matrix(matrixSize, 1);
     Matrix* matrixB = create_matrix(matrixSize, 1);
 
-    // Print generated matrices
+
     printf("Matrix A:\n");
     print_matrix(matrixA);
     printf("\nMatrix B:\n");
@@ -86,7 +86,7 @@ int main(int argc, char* argv[]) {
     Matrix* resultMatrix = multiply_matrices(matrixA, matrixB);
     clock_t end = clock();
 
-    // Print result
+
     printf("\nMatrix C (Result):\n");
     print_matrix(resultMatrix);
 
