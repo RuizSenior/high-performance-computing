@@ -51,7 +51,7 @@ Matrix* multiply_matrices(Matrix* matrixA, Matrix* matrixB) {
 
 
 void delete_matrix(Matrix** matrix) {
-    if (matrix == NULL || *matrix == NULL) return; // Safety check
+    if (matrix == NULL || *matrix == NULL) return;
     free((*matrix)->matrixData);
     free(*matrix);
     *matrix = NULL;
