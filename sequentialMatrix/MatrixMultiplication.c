@@ -8,7 +8,7 @@ typedef struct {
     int* matrixData;   // Pointer to the matrix data stored in a 1D array
 } Matrix;
 
-
+// Function to create a matrix
 Matrix* create_matrix(size_t matrixSize, int fillWithRandom) {
     Matrix* matrix = (Matrix*) malloc(sizeof(Matrix));
     matrix->matrixData = (int*) malloc(sizeof(int) * matrixSize * matrixSize);
@@ -22,7 +22,7 @@ Matrix* create_matrix(size_t matrixSize, int fillWithRandom) {
     return matrix;
 }
 
-
+// Function to print a matrix
 void print_matrix(Matrix* matrix) {
     for (size_t i = 0; i < matrix->matrixSize; i++) {
         for (size_t j = 0; j < matrix->matrixSize; j++) {
@@ -32,7 +32,7 @@ void print_matrix(Matrix* matrix) {
     }
 }
 
-
+// Function to multiply two matrices
 Matrix* multiply_matrices(Matrix* matrixA, Matrix* matrixB) {
     size_t size = matrixA->matrixSize;
     Matrix* resultMatrix = create_matrix(size, 0); // Empty matrix
@@ -49,7 +49,7 @@ Matrix* multiply_matrices(Matrix* matrixA, Matrix* matrixB) {
     return resultMatrix;
 }
 
-
+// Function to free memory allocated for a matrix
 void delete_matrix(Matrix** matrix) {
     if (matrix == NULL || *matrix == NULL) return;
     free((*matrix)->matrixData);
@@ -58,8 +58,8 @@ void delete_matrix(Matrix** matrix) {
 }
 
 int main(int argc, char* argv[]) {
-    if (argc != 2) {
-        printf("Usage: %s <matrix_size>\n", argv[0]);
+    if (argc != 3) {
+        printf("Usage: %s <matrix_size> <show_matrices (0 or 1)>\n", argv[0]);
         return 1;
     }
 
@@ -69,26 +69,35 @@ int main(int argc, char* argv[]) {
         return 1;
     }
 
+    int showMatrices = 1; 
+    if (argc == 3) {
+        showMatrices = atoi(argv[2]); // Convert argument to integer
+    }
+
     srand(time(NULL)); 
 
     // Create matrices
     Matrix* matrixA = create_matrix(matrixSize, 1);
     Matrix* matrixB = create_matrix(matrixSize, 1);
 
-
-    printf("Matrix A:\n");
-    print_matrix(matrixA);
-    printf("\nMatrix B:\n");
-    print_matrix(matrixB);
+    // Print matrices if the user wants to
+    if (showMatrices) {
+        printf("Matrix A:\n");
+        print_matrix(matrixA);
+        printf("\nMatrix B:\n");
+        print_matrix(matrixB);
+    }
 
     // Measure execution time
     clock_t start = clock();
     Matrix* resultMatrix = multiply_matrices(matrixA, matrixB);
     clock_t end = clock();
 
-
-    printf("\nMatrix C (Result):\n");
-    print_matrix(resultMatrix);
+    // Print result matrix if needed
+    if (showMatrices) {
+        printf("\nMatrix C (Result):\n");
+        print_matrix(resultMatrix);
+    }
 
     // Calculate and display execution time
     double executionTime = ((double)(end - start)) / CLOCKS_PER_SEC;
