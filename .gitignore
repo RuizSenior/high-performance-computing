@@ -7,3 +7,4 @@
 *.sh
 *.txt
 *csv
+.out
