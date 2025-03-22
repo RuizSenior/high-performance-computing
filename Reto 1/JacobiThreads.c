@@ -1,4 +1,5 @@
 #define _POSIX_C_SOURCE 199309L
+#define _GNU_SOURCE
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -18,11 +19,15 @@ typedef struct {
     double* utmp;
 } ThreadData;
 
+pthread_barrier_t barrier;
+
 void* jacobi_thread(void* arg) {
     ThreadData* data = (ThreadData*)arg;
     for (int i = data->start; i < data->end; ++i) {
         data->utmp[i] = (data->u[i-1] + data->u[i+1] + data->h2 * data->f[i]) / 2;
     }
+
+    pthread_barrier_wait(&barrier);
     return NULL;
 }
 
@@ -37,6 +42,7 @@ void jacobi(int nsweeps, int n, int num_threads, double* u, double* f) {
 
     pthread_t threads[num_threads];
     ThreadData thread_data[num_threads];
+    pthread_barrier_init(&barrier, NULL, num_threads);
     int chunk_size = n / num_threads;
 
     for (sweep = 0; sweep < nsweeps; sweep += 2) {
@@ -54,15 +60,13 @@ void jacobi(int nsweeps, int n, int num_threads, double* u, double* f) {
             pthread_join(threads[i], NULL);
         }
 
-        for (i = 0; i < num_threads; i++) {
-            thread_data[i].u = utmp;
-            thread_data[i].utmp = u;
-            pthread_create(&threads[i], NULL, jacobi_thread, &thread_data[i]);
-        }
-        for (i = 0; i < num_threads; i++) {
-            pthread_join(threads[i], NULL);
-        }
+        double* tmp = u;
+        u = utmp;
+        utmp = tmp;
+
     }
+
+    pthread_barrier_destroy(&barrier);
     free(utmp);
 }
 
