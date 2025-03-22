@@ -39,29 +39,29 @@ void jacobi_processes(int N, int NSTEPS, int numProcesses) {
     struct timespec start, end;
     clock_gettime(CLOCK_MONOTONIC, &start);
 
-    for (int step = 0; step < NSTEPS; step++) {
-        for (int p = 0; p < numProcesses; p++) {
-            int startIdx = 1 + p * chunkSize;
-            int endIdx = startIdx + chunkSize;
-            if (p == numProcesses - 1) {
-                endIdx += remainder;
-            }
+    pid_t pids[numProcesses];
 
-            pid_t pid = fork();
-            if (pid == 0) {  // Proceso hijo
+    for (int p = 0; p < numProcesses; p++) {
+        int startIdx = 1 + p * chunkSize;
+        int endIdx = startIdx + chunkSize;
+        if (p == numProcesses - 1) {
+            endIdx += remainder;
+        }
+
+        if ((pids[p] = fork()) == 0) { // Proceso hijo
+            for (int step = 0; step < NSTEPS; step++) {
                 jacobi_step(u, utmp, startIdx, endIdx);
-                exit(0);
+                double* temp = u;
+                u = utmp;
+                utmp = temp;
             }
+            exit(0);
         }
+    }
 
-        // Esperar a que todos los procesos terminen antes de intercambiar u y utmp
-        for (int p = 0; p < numProcesses; p++) {
-            wait(NULL);
-        }
-
-        double* temp = u;
-        u = utmp;
-        utmp = temp;
+    // Esperar a que todos los procesos terminen
+    for (int p = 0; p < numProcesses; p++) {
+        waitpid(pids[p], NULL, 0);
     }
 
     clock_gettime(CLOCK_MONOTONIC, &end);
