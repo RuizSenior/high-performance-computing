@@ -47,7 +47,7 @@ void jacobi(int nsweeps, int n, int num_threads, double* u, double* f) {
 
     for (sweep = 0; sweep < nsweeps; sweep += 2) {
         for (i = 0; i < num_threads; i++) {
-            thread_data[i].start = (i == 0) ? 1 : i * chunk_size;
+            thread_data[i].start = 1 + i * chunk_size;
             thread_data[i].end = (i == num_threads - 1) ? n : (i + 1) * chunk_size;
             thread_data[i].n = n;
             thread_data[i].h2 = h2;
